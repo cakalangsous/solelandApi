@@ -1,7 +1,6 @@
-import Parents from "../../models/ParentModel.js"
+import Kid from "../../../models/KidModel.js"
 import { validationResult } from "express-validator"
 import bcrypt from "bcrypt"
-import randomstring from "randomstring"
 import jwt from "jsonwebtoken"
 
 export const login = async (req, res) => {
@@ -12,26 +11,26 @@ export const login = async (req, res) => {
         ) {
             return res.json({
                 status: false,
-                message: "Please provide the email and password",
+                message: "Please provide the username and password",
             })
         }
-
-        const parent = await Parents.scope("withPassword").findOne({
+        const kid = await Kid.scope("withPassword").findOne({
             where: {
-                email: req.body.email,
+                username: req.body.username,
             },
         })
 
-        const match = await bcrypt.compare(req.body.password, parent.password)
+        const match = await bcrypt.compare(req.body.password, kid.password)
 
         if (!match)
-            return res
-                .status(200)
-                .json({ status: false, message: "Wrong email or password" })
+            return res.status(200).json({
+                status: false,
+                message: "Wrong username or passwords",
+            })
 
-        const { uuid, username, email } = parent
+        const { uuid, username } = kid
         const accessToken = jwt.sign(
-            { uuid, username, email },
+            { uuid, username },
             process.env.ACCESS_TOKEN_SECRET,
             {
                 expiresIn: "1d",
@@ -39,24 +38,24 @@ export const login = async (req, res) => {
         )
 
         const refreshToken = jwt.sign(
-            { uuid, username, email },
+            { uuid, username },
             process.env.REFRESH_TOKEN_SECRET,
             {
                 expiresIn: "2d",
             }
         )
 
-        parent.refreshToken = refreshToken
-        await parent.save()
+        kid.refreshToken = refreshToken
+        await kid.save()
 
-        res.cookie("refreshToken", refreshToken, {
+        res.cookie("refreshTokenKid", refreshToken, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
         })
 
-        const parentData = await Parents.findOne({
+        const kidData = await Kid.findOne({
             where: {
-                id: parent.id,
+                id: kid.id,
             },
         })
 
@@ -64,7 +63,7 @@ export const login = async (req, res) => {
             status: true,
             message: "Login success",
             data: {
-                parent: parentData,
+                kid: kidData,
                 token: accessToken,
             },
         })
@@ -72,7 +71,7 @@ export const login = async (req, res) => {
         console.log(error)
         return res.status(200).json({
             status: false,
-            message: "Wrong email or password",
+            message: "Wrong username or password",
         })
     }
 }
@@ -87,35 +86,28 @@ export const register = async (req, res) => {
         })
     }
 
-    const { username, email, password } = req.body
+    const { parent_id, name, username, password, gender } = req.body
 
     const salt = await bcrypt.genSalt(10)
     const hasedPassword = await bcrypt.hash(password, salt)
 
     try {
-        let parent = await Parents.create({
+        let kid = await Kid.create({
+            parent_id,
+            name,
             username,
-            email,
             password: hasedPassword,
-            emailVerifyToken: randomstring.generate(70),
+            gender,
         })
 
-        const parentData = await Parents.findOne({
-            where: {
-                id: parent.id,
-            },
-        })
+        await kid.reload()
+
+        delete kid.password
 
         return res.status(201).json({
             status: true,
-            message: "User Registered",
-            data: parentData,
+            message: "Kid registered successfully",
+            data: kid,
         })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            status: false,
-            message: "Something went wrong. Please try again.",
-        })
-    }
+    } catch (error) {}
 }
