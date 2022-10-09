@@ -43,7 +43,7 @@ const Parents = db.define('parents', {
     freezeTableName: true,
     defaultScope: {
         attributes: {
-            exclude: ['password', 'emailVerifyToken', 'refreshToken']
+            exclude: ['password', 'emailVerifyToken', 'refreshToken', 'googleId', 'facebookId', 'twitterId']
         }
     },
     scopes: {
