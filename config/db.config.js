@@ -1,4 +1,4 @@
-import dotenv from "dotenv"
+const dotenv = require("dotenv")
 dotenv.config()
 
 const dbConfig = {
@@ -7,4 +7,4 @@ const dbConfig = {
     password: process.env.DB_PASSWORD,
 }
 
-export default dbConfig
+module.exports = dbConfig

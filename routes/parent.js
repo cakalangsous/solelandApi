@@ -1,7 +1,7 @@
-import express from "express"
-import { profile } from "../controllers/game/parent/ParentController.js"
+const express = require("express")
+const parent = require("../controllers/game/parent/ParentController.js")
 const router = express.Router()
 
-router.get("/profile", profile)
+router.get("/profile", parent.profile)
 
-export default router
+module.exports = router

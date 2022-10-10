@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize"
-import db from "../config/Database.js"
+const { Sequelize } = require("sequelize")
+const db = require("../config/Database.js")
 
 const { DataTypes } = Sequelize
 
@@ -25,4 +25,4 @@ const KidInventory = db.define("kids_inventory", {
     },
 })
 
-export default KidInventory
+module.exports = KidInventory

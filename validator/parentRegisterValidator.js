@@ -1,7 +1,7 @@
-import { check } from "express-validator";
-import Parents from "../models/ParentModel.js";
+const check = require("express-validator").check
+const Parents = require("../models/ParentModel.js")
 
-export const parentRegisterValidator = [
+exports.parentRegisterValidator = [
     check("username").trim().notEmpty().withMessage("Username is required."),
     check("email")
         .notEmpty()
@@ -12,7 +12,7 @@ export const parentRegisterValidator = [
             const email = await Parents.findOne({ where: { email: value } })
 
             if (email) {
-                throw new Error("Email registered");
+                throw new Error("Email registered")
             }
         }),
     check("password").notEmpty().withMessage("Password is required"),
@@ -23,8 +23,8 @@ export const parentRegisterValidator = [
             if (value !== req.body.password) {
                 throw new Error(
                     "Password confirmation doesn't match with password"
-                );
+                )
             }
-            return true;
+            return true
         }),
-];
+]

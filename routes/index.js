@@ -1,14 +1,15 @@
-import express from "express"
+const express = require("express")
 
-import {
+const {
     login,
     register,
-} from "../controllers/game/parent/ParentAuthController.js"
-import { parentRegisterValidator } from "../validator/parentRegisterValidator.js"
-import Kid from "./kid.js"
-import Parent from "./parent.js"
+} = require("../controllers/game/parent/ParentAuthController.js")
+const {
+    parentRegisterValidator,
+} = require("../validator/parentRegisterValidator.js")
+const Parent = require("./parent.js")
 
-import verifyToken from "../middleware/verifyParentToken.js"
+const verifyToken = require("../middleware/verifyParentToken.js")
 const router = express.Router()
 
 // parent auth routes
@@ -16,6 +17,6 @@ router.post("/login", login)
 router.post("/register", parentRegisterValidator, register)
 
 router.use("/parent", verifyToken, Parent)
-router.use("/kid", Kid)
+router.use("/kid", require("./kid.js"))
 
-export default router
+module.exports = router

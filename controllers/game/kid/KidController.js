@@ -1,6 +1,6 @@
-import Kid from "../../../models/KidModel.js"
+const Kid = require("../../../models/KidModel.js")
 
-export const profile = async (req, res) => {
+exports.profile = async (req, res) => {
     const { uuid, username } = req
 
     try {
@@ -24,7 +24,7 @@ export const profile = async (req, res) => {
     }
 }
 
-export const updateProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
     const { uuid, username } = req
 
     try {

@@ -1,7 +1,7 @@
-import Kid from "../../../models/KidModel.js"
-import KidInventory from "../../../models/KidInventory.js"
+const Kid = require("../../../models/KidModel.js")
+const KidInventory = require("../../../models/KidInventory.js")
 
-export const loadKidInventory = async (req, res) => {
+const loadKidInventory = async (req, res) => {
     const { uuid, username } = req
 
     try {
@@ -32,3 +32,5 @@ export const loadKidInventory = async (req, res) => {
         })
     }
 }
+
+module.exports = { loadKidInventory }

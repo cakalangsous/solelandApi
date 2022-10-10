@@ -1,15 +1,18 @@
-import { check } from "express-validator";
-import Kid from "../models/KidModel.js";
+const check = require("express-validator").check
+const Kid = require("../models/KidModel.js")
 
-export const kidRegisterValidator = [
-    check("parent_id").trim().notEmpty().withMessage("Parent UUID is required."),
+const kidRegisterValidator = [
+    check("parent_id")
+        .trim()
+        .notEmpty()
+        .withMessage("Parent UUID is required."),
     check("name").trim().notEmpty().withMessage("Name is required."),
     check("username")
         .trim()
         .notEmpty()
         .withMessage("Username is required.")
         .custom(async (value) => {
-            const username = await Kid.findOne({ where: { username: value } });
+            const username = await Kid.findOne({ where: { username: value } })
 
             if (username) {
                 throw new Error("Username exist")
@@ -27,5 +30,9 @@ export const kidRegisterValidator = [
             }
             return true
         }),
-    check('gender').isIn(['male', 'female']).withMessage('Please input either male or female')
-];
+    check("gender")
+        .isIn(["male", "female"])
+        .withMessage("Please input either male or female"),
+]
+
+module.exports = kidRegisterValidator

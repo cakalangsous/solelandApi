@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize"
-import dbConfig from "./db.config.js"
+const { Sequelize } = require("sequelize")
+const dbConfig = require("./db.config.js")
 
 console.log(dbConfig)
 
@@ -8,4 +8,16 @@ const db = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
     dialect: "mysql",
 })
 
-export default db
+const connect = async (req, res) => {
+    try {
+        await db.authenticate()
+        // await db.sync()
+        console.log("database connected")
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+connect()
+
+module.exports = db

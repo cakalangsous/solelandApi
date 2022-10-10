@@ -1,9 +1,9 @@
-import Kid from "../../../models/KidModel.js"
-import { validationResult } from "express-validator"
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+const Kid = require("../../../models/KidModel.js")
+const { validationResult } = require("express-validator")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
     try {
         if (
             req.body.username === undefined ||
@@ -76,7 +76,7 @@ export const login = async (req, res) => {
     }
 }
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
     const error = validationResult(req)
     if (!error.isEmpty()) {
         return res.json({
@@ -110,4 +110,9 @@ export const register = async (req, res) => {
             data: kid,
         })
     } catch (error) {}
+}
+
+module.exports = {
+    register,
+    login,
 }

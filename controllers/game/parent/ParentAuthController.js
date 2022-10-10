@@ -1,10 +1,10 @@
-import Parents from "../../../models/ParentModel.js"
-import { validationResult } from "express-validator"
-import bcrypt from "bcrypt"
-import randomstring from "randomstring"
-import jwt from "jsonwebtoken"
+const Parents = require("../../../models/ParentModel.js")
+const { validationResult } = require("express-validator")
+const bcrypt = require("bcrypt")
+const randomstring = require("randomstring")
+const jwt = require("jsonwebtoken")
 
-export const login = async (req, res) => {
+exports.login = async (req, res) => {
     try {
         if (req.body.email === undefined || req.body.password === undefined) {
             return res.json({
@@ -74,7 +74,7 @@ export const login = async (req, res) => {
     }
 }
 
-export const register = async (req, res) => {
+exports.register = async (req, res) => {
     const error = validationResult(req)
     if (!error.isEmpty()) {
         return res.json({
