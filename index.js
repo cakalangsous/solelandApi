@@ -33,6 +33,4 @@ app.use("/", (req, res) => {
     })
 })
 
-app.listen(process.env.PORT || 5000, () =>
-    console.log(`server running at port ${process.env.PORT}`)
-)
+app.listen(() => console.log(`server running`))
