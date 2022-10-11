@@ -2,6 +2,7 @@ const Kid = require("../../../models/KidModel.js")
 const { validationResult } = require("express-validator")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const Parents = require("../../../models/ParentModel.js")
 
 const login = async (req, res) => {
     try {
@@ -86,14 +87,22 @@ const register = async (req, res) => {
         })
     }
 
-    const { parent_id, name, username, password, gender } = req.body
+    const { uuid, email } = req
+    const { name, username, password, gender } = req.body
 
     const salt = await bcrypt.genSalt(10)
     const hasedPassword = await bcrypt.hash(password, salt)
 
     try {
+        const parent = await Parents.findOne({
+            where: {
+                uuid,
+                email,
+            },
+        })
+
         let kid = await Kid.create({
-            parent_id,
+            parentId: parent.id,
             name,
             username,
             password: hasedPassword,

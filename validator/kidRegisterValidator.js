@@ -2,10 +2,6 @@ const check = require("express-validator").check
 const Kid = require("../models/KidModel.js")
 
 const kidRegisterValidator = [
-    check("parent_id")
-        .trim()
-        .notEmpty()
-        .withMessage("Parent UUID is required."),
     check("name").trim().notEmpty().withMessage("Name is required."),
     check("username")
         .trim()

@@ -3,6 +3,7 @@ const dotenv = require("dotenv")
 const db = require("./config/Database.js")
 const router = require("./routes/index.js")
 const cookieParser = require("cookie-parser")
+const expressBusboy = require("express-busboy")
 
 dotenv.config()
 
@@ -15,6 +16,8 @@ app.use(
         extended: true,
     })
 )
+
+expressBusboy.extend(app)
 
 app.use("/api", router)
 

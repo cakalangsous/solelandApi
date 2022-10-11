@@ -10,9 +10,6 @@ const Kids = db.define(
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
         },
-        parent_id: {
-            type: DataTypes.INTEGER,
-        },
         username: {
             type: DataTypes.STRING,
             allowNull: false,

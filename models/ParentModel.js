@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize")
 const db = require("../config/Database.js")
+const Kid = require("./KidModel")
 
 const { DataTypes } = Sequelize
 
@@ -64,5 +65,7 @@ const Parents = db.define(
         },
     }
 )
+
+Parents.hasMany(Kid)
 
 module.exports = Parents

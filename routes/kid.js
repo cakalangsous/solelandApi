@@ -22,5 +22,6 @@ router.post("/update", verifyKidToken, kid.updateProfile)
 
 // kid inventory
 router.get("/inventory", verifyKidToken, loadKidInventory)
+// router.get("/inventory", verifyKidToken, loadKidInventory)
 
 module.exports = router

@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize")
 const db = require("../config/Database.js")
+const Kid = require("./KidModel")
 
 const { DataTypes } = Sequelize
 
@@ -7,9 +8,6 @@ const KidInventory = db.define("kids_inventory", {
     uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
-    },
-    kid_id: {
-        type: DataTypes.INTEGER,
     },
     slot: {
         type: DataTypes.INTEGER,
@@ -24,5 +22,7 @@ const KidInventory = db.define("kids_inventory", {
         allowNull: false,
     },
 })
+
+Kid.hasMany(KidInventory)
 
 module.exports = KidInventory

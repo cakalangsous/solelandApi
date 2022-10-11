@@ -33,4 +33,29 @@ const loadKidInventory = async (req, res) => {
     }
 }
 
+const postKidInventory = async (req, res) => {
+    const { uuid, username } = req
+    const { name, slot, amount } = req.body
+
+    try {
+        const kid = await Kid.findOne({
+            where: {
+                uuid,
+                username,
+            },
+        })
+
+        const kidInventory = await KidInventory.create({
+            kid_id: kid.id,
+            name,
+            slot,
+            amount
+        })
+
+        const kidInventoryData = KidInventory
+    } catch (err) {
+        
+    }
+}
+
 module.exports = { loadKidInventory }
