@@ -1,5 +1,6 @@
 const Kid = require("../../../models/KidModel.js")
 const KidInventory = require("../../../models/KidInventory.js")
+const { validationResult } = require("express-validator")
 
 const loadKidInventory = async (req, res) => {
     const { uuid, username } = req
@@ -34,8 +35,16 @@ const loadKidInventory = async (req, res) => {
 }
 
 const postKidInventory = async (req, res) => {
+    const error = validationResult(req)
+    if (!error.isEmpty()) {
+        return res.json({
+            status: false,
+            message: "Validation Error",
+            error: error.mapped(),
+        })
+    }
+
     const { uuid, username } = req
-    const { name, slot, amount } = req.body
 
     try {
         const kid = await Kid.findOne({
@@ -45,17 +54,46 @@ const postKidInventory = async (req, res) => {
             },
         })
 
-        const kidInventory = await KidInventory.create({
-            kid_id: kid.id,
-            name,
-            slot,
-            amount
+        await KidInventory.destroy({
+            where: {
+                kidId: kid.id,
+            },
         })
 
-        const kidInventoryData = KidInventory
-    } catch (err) {
-        
+        let insertArray = []
+        req.body.inventory.forEach((e) => {
+            let tempObj = {
+                kidId: kid.id,
+                slot: e.slot,
+                name: e.name,
+                amount: e.amount,
+            }
+            insertArray.push(tempObj)
+        })
+
+        const kidInventory = await KidInventory.bulkCreate(insertArray)
+
+        const returnData = await Kid.findOne({
+            where: {
+                id: kid.id,
+            },
+            include: {
+                model: KidInventory,
+            },
+        })
+
+        return res.status(201).json({
+            status: true,
+            message: `${kid.name}'s inventories updated`,
+            kidInventories: returnData,
+        })
+    } catch (error) {
+        return res.json({
+            status: false,
+            message: "Something went wrong",
+            error,
+        })
     }
 }
 
-module.exports = { loadKidInventory }
+module.exports = { loadKidInventory, postKidInventory }

@@ -23,6 +23,7 @@ const KidInventory = db.define("kids_inventory", {
     },
 })
 
+KidInventory.belongsTo(Kid)
 Kid.hasMany(KidInventory)
 
 module.exports = KidInventory

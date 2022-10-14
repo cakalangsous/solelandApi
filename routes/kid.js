@@ -7,11 +7,13 @@ const {
 const kid = require("../controllers/game/kid/KidController.js")
 const {
     loadKidInventory,
+    postKidInventory,
 } = require("../controllers/game/kid/KidInventoryController.js")
 
 const verifyParentToken = require("../middleware/verifyParentToken.js")
 const verifyKidToken = require("../middleware/verifyKidToken.js")
 const kidRegisterValidator = require("../validator/kidRegisterValidator.js")
+const kidInventoryValidator = require("../validator/kidInventoryValidator.js")
 
 const router = express.Router()
 
@@ -22,6 +24,11 @@ router.post("/update", verifyKidToken, kid.updateProfile)
 
 // kid inventory
 router.get("/inventory", verifyKidToken, loadKidInventory)
-// router.get("/inventory", verifyKidToken, loadKidInventory)
+router.post(
+    "/inventory",
+    verifyKidToken,
+    kidInventoryValidator,
+    postKidInventory
+)
 
 module.exports = router
