@@ -23,10 +23,14 @@ const KidInventory = db.define("kids_inventory", {
     },
 })
 
-KidInventory.belongsTo(Kid)
+KidInventory.belongsTo(Kid, {
+    foreignKey: {
+        name: "kidId",
+    },
+})
 Kid.hasMany(KidInventory, {
     foreignKey: {
-        name: "KidId",
+        name: "kidId",
     },
 })
 
