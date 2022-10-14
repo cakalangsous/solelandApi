@@ -85,7 +85,7 @@ const postKidInventory = async (req, res) => {
         return res.status(201).json({
             status: true,
             message: `${kid.name}'s inventories updated`,
-            kidInventories: returnData,
+            kid: returnData,
         })
     } catch (error) {
         return res.json({
