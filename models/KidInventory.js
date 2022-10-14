@@ -24,6 +24,10 @@ const KidInventory = db.define("kids_inventory", {
 })
 
 KidInventory.belongsTo(Kid)
-Kid.hasMany(KidInventory)
+Kid.hasMany(KidInventory, {
+    foreignKey: {
+        name: "KidId",
+    },
+})
 
 module.exports = KidInventory
