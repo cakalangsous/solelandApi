@@ -15,7 +15,7 @@ const loadKidInventory = async (req, res) => {
 
         const kidInventory = await KidInventory.findAll({
             where: {
-                kid_id: kid.id,
+                kidId: kid.id,
             },
         })
 
