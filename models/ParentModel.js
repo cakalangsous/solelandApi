@@ -39,7 +39,7 @@ const Parents = db.define(
             type: DataTypes.STRING,
         },
         refreshToken: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
         },
     },
     {
@@ -60,6 +60,11 @@ const Parents = db.define(
             withPassword: {
                 attributes: {
                     include: ["password"],
+                },
+            },
+            withRefreshToken: {
+                attributes: {
+                    include: ["refreshToken"],
                 },
             },
         },

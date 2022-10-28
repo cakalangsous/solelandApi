@@ -9,14 +9,13 @@ const {
 } = require("../validator/parentRegisterValidator.js")
 const Parent = require("./parent.js")
 
-const verifyToken = require("../middleware/verifyParentToken.js")
 const router = express.Router()
 
 // parent auth routes
 router.post("/login", login)
 router.post("/register", parentRegisterValidator, register)
 
-router.use("/parent", verifyToken, Parent)
+router.use("/parent", Parent)
 router.use("/kid", require("./kid.js"))
 
 module.exports = router

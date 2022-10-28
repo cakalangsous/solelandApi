@@ -1,9 +1,9 @@
 const express = require("express")
 const dotenv = require("dotenv")
-const db = require("./config/Database.js")
 const router = require("./routes/index.js")
 const cookieParser = require("cookie-parser")
 const expressBusboy = require("express-busboy")
+const cors = require("cors")
 
 dotenv.config()
 
@@ -18,6 +18,15 @@ app.use(
 )
 
 expressBusboy.extend(app)
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Credentials', true)
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept  ")
+    next();
+})
+
+app.use(cors({ origin: "http://localhost:3000", withCredentials: true, credentials: 'include' }))
 
 app.use("/api", router)
 

@@ -5,15 +5,17 @@ const verifyToken = (req, res, next) => {
 
     const token = authHeader && authHeader.split(" ")[1]
 
-    if (token == null)
-        return res.status(200).json({ status: false, message: "Unauthorized" })
-
+    if (token == null) {
+        console.log("token is null")
+        return res.status(401).json({ status: false, message: "Unauthorized" })
+    }
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err)
+        if (err) {
+            console.log("token is invalid", err)
             return res
-                .status(200)
-                .json({ status: false, message: "Unknown token." })
-
+                .status(401)
+                .json({ status: false, message: "Unauthorized" })
+        }
         req.email = decoded.email
         req.uuid = decoded.uuid
 

@@ -44,7 +44,7 @@ const Kids = db.define(
             type: DataTypes.DOUBLE,
         },
         refreshToken: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
         },
     },
     {

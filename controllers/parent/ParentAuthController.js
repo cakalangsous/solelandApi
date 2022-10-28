@@ -1,4 +1,4 @@
-const Parents = require("../../../models/ParentModel.js")
+const Parents = require("../../models/ParentModel.js")
 const { validationResult } = require("express-validator")
 const bcrypt = require("bcrypt")
 const randomstring = require("randomstring")
@@ -23,7 +23,7 @@ exports.login = async (req, res) => {
 
         if (!match)
             return res
-                .status(200)
+                .status(404)
                 .json({ status: false, message: "Wrong email or password" })
 
         const { uuid, username, email } = parent
@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
             { uuid, username, email },
             process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn: "1d",
+                expiresIn: "10s",
             }
         )
 
@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
             { uuid, username, email },
             process.env.REFRESH_TOKEN_SECRET,
             {
-                expiresIn: "2d",
+                expiresIn: "1d",
             }
         )
 
@@ -54,12 +54,19 @@ exports.login = async (req, res) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            maxAge: 48 * 60 * 60 * 1000,
+            sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
+            secure: true,
         })
 
         const parentData = await Parents.findOne({
             where: {
                 id: parent.id,
+            },
+            attributes: {
+                uuid,
+                username,
+                email,
             },
         })
 
@@ -73,9 +80,10 @@ exports.login = async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        return res.status(200).json({
+        return res.status(422).json({
             status: false,
             message: "Wrong email or password",
+            error,
         })
     }
 }
@@ -119,6 +127,66 @@ exports.register = async (req, res) => {
         return res.status(422).json({
             status: false,
             message: "Something went wrong. Please try again.",
+            error,
         })
     }
+}
+
+exports.logout = async (req, res) => {
+    const refreshToken = req.cookies.refreshToken
+
+    if (!refreshToken) return res.status(204)
+
+    const parent = await Parents.findOne({
+        where: {
+            refreshToken,
+        },
+    })
+    if (!parent) return res.status(204)
+
+    const parentId = parent.id
+    await Parents.update(
+        {
+            refreshToken: null,
+        },
+        {
+            where: { id: parentId },
+        }
+    )
+
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+    })
+    return res.status(200).json({
+        status: true,
+        message: "Logged out",
+    })
+}
+
+exports.forgotPassword = async (req, res) => {
+    const email = req.body.email
+
+    if (!email) {
+        return res.status(422).json({
+            status: false,
+            message: "The email is required",
+        })
+    }
+
+    const parent = await Parents.findOne({
+        where: {
+            email,
+        },
+    })
+
+    if (!parent) {
+        return res.status(404).json({
+            status: false,
+            message: "Unknown email",
+        })
+    }
+
+    console.log(parent)
 }
