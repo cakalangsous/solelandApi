@@ -3,6 +3,7 @@ const { validationResult } = require("express-validator")
 const bcrypt = require("bcrypt")
 const randomstring = require("randomstring")
 const jwt = require("jsonwebtoken")
+const { transporter } = require("../../config/email")
 
 exports.login = async (req, res) => {
     try {
@@ -115,6 +116,21 @@ exports.register = async (req, res) => {
             where: {
                 id: parent.id,
             },
+        })
+
+        var mailOptions = {
+            from: process.env.MAIL_FROM,
+            to: parentData.email,
+            subject: `${process.env.MAIL_FROM_NAME_PREFIX} - Please verify your email`,
+            text: "This woud be the verification email!",
+        }
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error)
+            } else {
+                console.log("email sent " + info.response)
+            }
         })
 
         return res.status(201).json({
