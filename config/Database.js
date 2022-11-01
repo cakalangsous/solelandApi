@@ -12,7 +12,7 @@ const connect = async (req, res) => {
     try {
         await db.authenticate()
         // await db.sync({ alter: true, force: true })
-        // await db.sync({ alter: true })
+        // await db.sync()
         console.log("database connected")
     } catch (error) {
         console.log(error)

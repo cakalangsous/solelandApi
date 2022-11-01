@@ -8,3 +8,13 @@ exports.transporter = nodemailer.createTransport({
         pass: process.env.MAIL_PASS,
     },
 })
+
+exports.handlebarOptions = {
+    viewEngine: {
+        extname: ".handlebars", // handlebars extension
+        partialsDir: "templates/", // location of your subtemplates aka. header, footer etc
+        defaultLayout: false, // name of main template
+    },
+    viewPath: "templates/",
+    extName: ".handlebars",
+}

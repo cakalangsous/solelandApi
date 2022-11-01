@@ -3,7 +3,9 @@ const { validationResult } = require("express-validator")
 const bcrypt = require("bcrypt")
 const randomstring = require("randomstring")
 const jwt = require("jsonwebtoken")
-const { transporter } = require("../../config/email")
+const { transporter, handlebarOptions } = require("../../config/email")
+const hbs = require("nodemailer-express-handlebars")
+const rootDir = require("path").resolve("./")
 
 exports.login = async (req, res) => {
     try {
@@ -26,6 +28,13 @@ exports.login = async (req, res) => {
             return res
                 .status(404)
                 .json({ status: false, message: "Wrong email or password" })
+
+        if (!parent.emailVerifiedAt) {
+            return res.status(401).json({
+                status: false,
+                message: "Please verify your email first.",
+            })
+        }
 
         const { uuid, username, email } = parent
         const accessToken = jwt.sign(
@@ -112,17 +121,38 @@ exports.register = async (req, res) => {
             emailVerifyToken: randomstring.generate(70),
         })
 
-        const parentData = await Parents.findOne({
+        const parentData = await Parents.scope("withEmailVerifyToken").findOne({
             where: {
                 id: parent.id,
             },
         })
 
+        transporter.use("compile", hbs(handlebarOptions))
+
+        const emailToken = jwt.sign(
+            { parent: parentData.emailVerifyToken },
+            process.env.EMAIL_SECRET,
+            { expiresIn: "3d" }
+        )
+
+        const link = `${process.env.FRONTEND_URL}/confirm/${emailToken}?`
+
         var mailOptions = {
             from: process.env.MAIL_FROM,
             to: parentData.email,
             subject: `${process.env.MAIL_FROM_NAME_PREFIX} - Please verify your email`,
-            text: "This woud be the verification email!",
+            template: "verify-email",
+            context: {
+                username,
+                link,
+            },
+            attachments: [
+                {
+                    filename: "logo-landscape.png",
+                    path: rootDir + "/assets/logo-landscape.png",
+                    cid: "logo-landscape",
+                },
+            ],
         }
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -145,6 +175,44 @@ exports.register = async (req, res) => {
             message: "Something went wrong. Please try again.",
             error,
         })
+    }
+}
+
+exports.confirm = async (req, res) => {
+    const emailVerifyToken = req.params.emailVerifyToken
+
+    try {
+        const decoded = jwt.verify(emailVerifyToken, process.env.EMAIL_SECRET)
+
+        console.log(decoded)
+
+        const parent = await Parents.scope("withEmailVerifyToken").findOne({
+            where: { emailVerifyToken: decoded.parent },
+        })
+
+        if (!parent) {
+            return res.status(404).json({
+                status: false,
+                message: "Data not found",
+            })
+        }
+
+        Parents.update(
+            {
+                emailVerifiedAt: new Date(),
+                emailVerifyToken: randomstring.generate(70),
+            },
+            {
+                where: { id: parent.id },
+            }
+        )
+
+        return res.json({
+            status: true,
+            message: "Email verified",
+        })
+    } catch (err) {
+        console.log("Error verify email ", err)
     }
 }
 

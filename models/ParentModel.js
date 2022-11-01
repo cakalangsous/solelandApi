@@ -67,6 +67,11 @@ const Parents = db.define(
                     include: ["refreshToken"],
                 },
             },
+            withEmailVerifyToken: {
+                attributes: {
+                    include: ["emailVerifyToken"],
+                },
+            },
         },
     }
 )
