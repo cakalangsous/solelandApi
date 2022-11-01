@@ -5,7 +5,6 @@ exports.parentRegisterValidator = [
     check("username").trim().notEmpty().withMessage("Username is required."),
     check("email")
         .notEmpty()
-        .normalizeEmail()
         .isEmail()
         .withMessage("Please input a valid email address")
         .custom(async (value) => {

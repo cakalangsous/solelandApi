@@ -20,7 +20,6 @@ app.use(
 expressBusboy.extend(app)
 
 app.use((req, res, next) => {
-    console.log(process.env.FRONTEND_URL)
     res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL)
     res.header("Access-Control-Allow-Credentials", true)
     res.header(
