@@ -1,11 +1,12 @@
 const Kids = require("../../models/KidModel")
 const Parents = require("../../models/ParentModel")
 const { validationResult } = require("express-validator")
+const bcrypt = require("bcrypt")
 
 exports.kidRegister = async (req, res) => {
     const error = validationResult(req)
     if (!error.isEmpty()) {
-        return res.json({
+        return res.status(422).json({
             status: false,
             message: "Validation Error",
             error: error.mapped(),
@@ -13,10 +14,7 @@ exports.kidRegister = async (req, res) => {
     }
 
     const { uuid, email } = req
-    const { name, username, password, gender } = req.body
-
-    const salt = await bcrypt.genSalt(10)
-    const hasedPassword = await bcrypt.hash(password, salt)
+    const { name, username, password, gender, dob } = req.body
 
     try {
         const parent = await Parents.findOne({
@@ -26,24 +24,26 @@ exports.kidRegister = async (req, res) => {
             },
         })
 
-        let kid = await Kid.create({
+        const salt = await bcrypt.genSalt(10)
+        const hasedPassword = await bcrypt.hash(password, salt)
+
+        let kid = await Kids.create({
             parentId: parent.id,
             name,
             username,
             password: hasedPassword,
             gender,
+            dob,
         })
-
-        await kid.reload()
-
-        delete kid.password
 
         return res.status(201).json({
             status: true,
             message: "Kid registered successfully",
             data: kid,
         })
-    } catch (error) {}
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 exports.getKids = async (req, res) => {

@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
             { uuid, username, email },
             process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn: "10s",
+                expiresIn: "1h",
             }
         )
 
@@ -64,6 +64,7 @@ exports.login = async (req, res) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
+            sameSite: "none",
             maxAge: 24 * 60 * 60 * 1000,
             secure: true,
         })

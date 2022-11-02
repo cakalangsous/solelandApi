@@ -26,6 +26,9 @@ const Kids = db.define(
             type: DataTypes.ENUM("male", "female"),
             allowNull: false,
         },
+        dob: {
+            type: DataTypes.DATEONLY,
+        },
         level: {
             type: DataTypes.INTEGER,
             defaultValue: 1,
