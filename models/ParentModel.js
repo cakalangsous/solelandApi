@@ -20,7 +20,7 @@ const Parents = db.define(
             allowNull: false,
         },
         emailVerifyToken: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
         },
         emailVerifiedAt: {
             type: DataTypes.DATE,
