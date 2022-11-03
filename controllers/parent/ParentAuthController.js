@@ -67,6 +67,7 @@ exports.login = async (req, res) => {
             sameSite: "none",
             maxAge: 24 * 60 * 60 * 1000,
             secure: true,
+            domain: process.env.PARENT_DOMAIN,
         })
 
         const parentData = await Parents.findOne({
