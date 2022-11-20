@@ -22,7 +22,6 @@ const loadKidInventory = async (req, res) => {
         return res.json({
             status: true,
             message: "Get kid inventory success",
-            kid,
             kidInventory,
         })
     } catch (error) {

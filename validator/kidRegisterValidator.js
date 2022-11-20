@@ -7,6 +7,7 @@ const kidRegisterValidator = [
         .trim()
         .notEmpty()
         .withMessage("Username is required.")
+        .isLength({ min: 3, max: 15 })
         .custom(async (value) => {
             const username = await Kid.findOne({ where: { username: value } })
 
