@@ -52,6 +52,10 @@ exports.updateProfile = async (req, res) => {
             req.body.y_coordinate !== undefined
                 ? req.body.y_coordinate
                 : kid.y_coordinate
+        kid.customization =
+            req.body.customization !== undefined
+                ? req.body.customization
+                : kid.customization
 
         await kid.save()
 

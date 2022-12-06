@@ -37,6 +37,9 @@ const Kids = db.define(
             type: DataTypes.FLOAT,
             defaultValue: 0,
         },
+        customization: {
+            type: DataTypes.TEXT,
+        },
         last_login: {
             type: DataTypes.DATE,
         },

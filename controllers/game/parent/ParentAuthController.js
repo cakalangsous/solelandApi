@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
             { uuid, username, email },
             process.env.REFRESH_TOKEN_SECRET,
             {
-                expiresIn: "2d",
+                expiresIn: "2m",
             }
         )
 

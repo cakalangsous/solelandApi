@@ -64,10 +64,10 @@ exports.login = async (req, res) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            sameSite: "none",
+            // sameSite: "none",
             maxAge: 24 * 60 * 60 * 1000,
-            secure: true,
-            domain: process.env.PARENT_DOMAIN,
+            secure: false,
+            // domain: process.env.PARENT_DOMAIN,
         })
 
         const parentData = await Parents.findOne({
@@ -241,8 +241,8 @@ exports.logout = async (req, res) => {
 
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        sameSite: "none",
-        secure: true,
+        // sameSite: "true",
+        secure: false,
     })
     return res.status(200).json({
         status: true,
