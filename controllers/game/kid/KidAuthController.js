@@ -3,6 +3,7 @@ const { validationResult } = require("express-validator")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const Parents = require("../../../models/ParentModel.js")
+const { getAge } = require("../../../utils/getAge")
 
 const login = async (req, res) => {
     try {
@@ -60,6 +61,8 @@ const login = async (req, res) => {
             },
         })
 
+        kidData.setDataValue("age", getAge(kidData.dob))
+
         return res.status(200).json({
             status: true,
             message: "Login success",
@@ -88,7 +91,7 @@ const register = async (req, res) => {
     }
 
     const { uuid, email } = req
-    const { name, username, password, gender } = req.body
+    const { name, username, password, gender, dob } = req.body
 
     const salt = await bcrypt.genSalt(10)
     const hasedPassword = await bcrypt.hash(password, salt)
@@ -107,6 +110,7 @@ const register = async (req, res) => {
             username,
             password: hasedPassword,
             gender,
+            dob,
         })
 
         await kid.reload()

@@ -44,6 +44,8 @@ const Parents = db.define(
     },
     {
         freezeTableName: true,
+        paranoid: true,
+        deletedAt: "deletedAt",
         defaultScope: {
             attributes: {
                 exclude: [

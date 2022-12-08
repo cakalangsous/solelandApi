@@ -11,6 +11,8 @@ exports.profile = async (req, res) => {
             },
         })
 
+        kid.setDataValue("age", getAge(kidData.dob))
+
         return res.json({
             status: true,
             message: "Get kid profile success",
@@ -65,6 +67,8 @@ exports.updateProfile = async (req, res) => {
                 username,
             },
         })
+
+        kidData.setDataValue("age", getAge(kidData.dob))
 
         return res.json({
             status: true,

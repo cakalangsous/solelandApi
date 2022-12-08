@@ -1,6 +1,11 @@
 const express = require("express")
 const parent = require("../controllers/parent/ParentController.js")
-const { kidRegister, getKids } = require("../controllers/parent/KidsController")
+const {
+    kidRegister,
+    getKids,
+    update,
+    destroy,
+} = require("../controllers/parent/KidsController")
 const verifyParentToken = require("../middleware/verifyParentToken.js")
 const kidRegisterValidator = require("../validator/kidRegisterValidator.js")
 
@@ -18,6 +23,7 @@ const {
     forgotPassword,
     confirm,
 } = require("../controllers/parent/ParentAuthController.js")
+const kidUpdateValidator = require("../validator/kidUpdateValidator.js")
 
 const router = express.Router()
 
@@ -31,6 +37,8 @@ router.get("/token", refreshToken)
 router.get("/profile", verifyParentToken, parent.profile)
 router.get("/kids", verifyParentToken, getKids)
 router.post("/kids", verifyParentToken, kidRegisterValidator, kidRegister)
+router.patch("/kids/:uuid", verifyParentToken, kidUpdateValidator, update)
+router.delete("/kids/:uuid", verifyParentToken, destroy)
 
 router.delete("/logout", verifyParentToken, logout)
 
