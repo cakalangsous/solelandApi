@@ -341,12 +341,14 @@ exports.request = async (req, res) => {
                 data = friend.target_kid
                 data.setDataValue("approve_status", friend.approve_status)
                 data.setDataValue("sender_status", true)
+                data.setDataValue("request_uuid", friend.uuid)
             }
 
             if (friend.target_kid.id === kid.id) {
                 data = friend.source_kid
                 data.setDataValue("approve_status", friend.approve_status)
                 data.setDataValue("sender_status", false)
+                data.setDataValue("request_uuid", friend.uuid)
             }
 
             return data
