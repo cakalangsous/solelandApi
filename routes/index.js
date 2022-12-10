@@ -18,4 +18,7 @@ router.post("/register", parentRegisterValidator, register)
 router.use("/parent", Parent)
 router.use("/kid", require("./kid.js"))
 
+router.use("/cities", require("./city"))
+router.use("/solepedia", require("./solepedia"))
+
 module.exports = router
