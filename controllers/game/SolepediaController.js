@@ -51,6 +51,13 @@ exports.listImageBySolepedia = async (req, res) => {
             },
         })
 
+        images.map((image) => {
+            image.setDataValue(
+                "image",
+                `${process.env.IMAGE_URL}${image.image}`
+            )
+        })
+
         return res.status(200).json({
             status: true,
             message: "Get images by solepedia ID success",
