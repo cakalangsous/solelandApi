@@ -31,4 +31,8 @@ SolepediaImage.belongsTo(Solepedia, {
     foreignKey: "solepedia_id",
 })
 
+Solepedia.hasMany(SolepediaImage, {
+    foreignKey: "solepedia_id",
+})
+
 module.exports = SolepediaImage

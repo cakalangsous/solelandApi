@@ -23,6 +23,12 @@ const verifyToken = (req, res, next) => {
                     },
                 })
 
+                if (!kid) {
+                    return res
+                        .status(403)
+                        .json({ status: false, message: "Unknown token data" })
+                }
+
                 return kid
             } catch (error) {
                 console.log(error)

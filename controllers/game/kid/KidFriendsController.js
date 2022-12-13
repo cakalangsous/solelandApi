@@ -165,6 +165,13 @@ exports.addFriend = async (req, res) => {
 exports.approve = async (req, res) => {
     const { uuid, kid } = req
 
+    if (req.body.request_uuid === undefined) {
+        return res.status(422).json({
+            status: false,
+            message: "request_uuid is required",
+        })
+    }
+
     const { request_uuid } = req.body
 
     const request = await KidFriend.findOne({
@@ -272,7 +279,7 @@ exports.getPending = async (req, res) => {
         })
 
         return res.status(200).json({
-            status: false,
+            status: true,
             message: "Get pending approve success",
             pending_approve_total: newData.length,
             pending_approve: newData,
@@ -355,7 +362,7 @@ exports.request = async (req, res) => {
         })
 
         return res.status(200).json({
-            status: false,
+            status: true,
             message: "Get friend request success",
             friend_request_total: newData.length,
             friend_request: newData,

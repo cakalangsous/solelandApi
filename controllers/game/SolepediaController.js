@@ -25,6 +25,7 @@ exports.listByCity = async (req, res) => {
     try {
         const solepedia = await Solepedia.findAll({
             where: { city_id: city },
+            include: SolepediaImage,
         })
 
         return res.status(200).json({
