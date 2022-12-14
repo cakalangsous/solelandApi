@@ -212,6 +212,55 @@ exports.approve = async (req, res) => {
     }
 }
 
+exports.decline = async (req, res) => {
+    const { kid } = req
+
+    if (req.body.friend_request_id === undefined) {
+        return res.status(422).json({
+            status: false,
+            message: "friend_request_id is required",
+        })
+    }
+
+    const { friend_request_id } = req.body
+
+    const request = await KidFriend.findOne({
+        where: {
+            id: friend_request_id,
+            approve_status: approveStatus.PENDING,
+        },
+    })
+
+    if (!request) {
+        return res.status(422).json({
+            status: false,
+            message: "Unknown source provided",
+        })
+    }
+
+    if (request.source_id !== kid.id && request.target_id !== kid.id) {
+        return res.status(406).json({
+            status: false,
+            message: "Unknown source provided",
+        })
+    }
+
+    try {
+        await request.destroy()
+
+        return res.status(200).json({
+            status: true,
+            message: "Friend request declined / removed",
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            status: false,
+            message: "Something went wrong. Please try again",
+        })
+    }
+}
+
 exports.getPending = async (req, res) => {
     const { uuid, kid } = req
 
@@ -261,19 +310,19 @@ exports.getPending = async (req, res) => {
         })
 
         const newData = pending.map((friend) => {
-            let data = {}
+            let data = friend
 
             if (friend.source_kid.id === kid.id) {
-                data = friend.target_kid
-                data.setDataValue("approve_status", friend.approve_status)
+                // data = friend.target_kid
                 data.setDataValue("sender_status", true)
             }
 
             if (friend.target_kid.id === kid.id) {
-                data = friend.source_kid
-                data.setDataValue("approve_status", friend.approve_status)
+                // data = friend.source_kid
                 data.setDataValue("sender_status", false)
             }
+
+            // data.setDataValue("friend_request_uuid", friend.uuid)
 
             return data
         })
@@ -342,20 +391,18 @@ exports.request = async (req, res) => {
         })
 
         const newData = request.map((friend) => {
-            let data = {}
+            let data = friend
 
             if (friend.source_kid.id === kid.id) {
-                data = friend.target_kid
-                data.setDataValue("approve_status", friend.approve_status)
+                // data = friend.target_kid
+                // data.setDataValue("approve_status", friend.approve_status)
                 data.setDataValue("sender_status", true)
-                data.setDataValue("request_uuid", friend.uuid)
             }
 
             if (friend.target_kid.id === kid.id) {
-                data = friend.source_kid
-                data.setDataValue("approve_status", friend.approve_status)
+                // data = friend.source_kid
+                // data.setDataValue("approve_status", friend.approve_status)
                 data.setDataValue("sender_status", false)
-                data.setDataValue("request_uuid", friend.uuid)
             }
 
             return data

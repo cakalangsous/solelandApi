@@ -13,6 +13,7 @@ const {
     getPending,
     request,
     search,
+    decline,
 } = require("../controllers/game/kid/KidFriendsController")
 
 const {
@@ -41,6 +42,7 @@ router.post("/update", verifyKidToken, kid.updateProfile)
 router.get("/friend/list", verifyKidToken, list)
 router.post("/friend/add", verifyKidToken, addFriend)
 router.post("/friend/approve", verifyKidToken, approve)
+router.post("/friend/decline", verifyKidToken, decline)
 router.get("/friend/pending_approve", verifyKidToken, getPending)
 router.get("/friend/request", verifyKidToken, request)
 router.post("/friend/search", verifyKidToken, search)
