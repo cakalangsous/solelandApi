@@ -165,18 +165,18 @@ exports.addFriend = async (req, res) => {
 exports.approve = async (req, res) => {
     const { uuid, kid } = req
 
-    if (req.body.request_uuid === undefined) {
+    if (req.body.source_id === undefined) {
         return res.status(422).json({
             status: false,
-            message: "request_uuid is required",
+            message: "source_id is required",
         })
     }
 
-    const { request_uuid } = req.body
+    const { source_id } = req.body
 
     const request = await KidFriend.findOne({
         where: {
-            uuid: request_uuid,
+            source_id,
             approve_status: approveStatus.PENDING,
         },
     })
