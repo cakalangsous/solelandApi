@@ -1,3 +1,4 @@
+const City = require("../../models/City")
 const Solepedia = require("../../models/Solepedia")
 const SolepediaImage = require("../../models/SolepediaImage")
 
@@ -23,9 +24,30 @@ exports.listByCity = async (req, res) => {
     const { city } = req.params
 
     try {
-        const solepedia = await Solepedia.findAll({
-            where: { city_id: city },
-            include: SolepediaImage,
+        const solepedia = await City.findOne({
+            where: {
+                id: city,
+            },
+            attributes: ["id", "uuid", "name"],
+            include: {
+                model: Solepedia,
+                attributes: ["id", "uuid", "title", "type"],
+                include: {
+                    model: SolepediaImage,
+                    as: "content",
+                    attributes: ["id", "uuid", "solepedia_id", "content"],
+                },
+            },
+        })
+
+        solepedia.solepedia.map((sole) => {
+            sole.content.map((image) => {
+                image.setDataValue(
+                    "content_url",
+                    `${process.env.IMAGE_URL}${image.content}`
+                )
+                image.content = undefined
+            })
         })
 
         return res.status(200).json({

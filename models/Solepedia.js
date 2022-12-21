@@ -35,4 +35,8 @@ Solepedia.belongsTo(City, {
     foreignKey: "city_id",
 })
 
+City.hasMany(Solepedia, {
+    foreignKey: "city_id",
+})
+
 module.exports = Solepedia
