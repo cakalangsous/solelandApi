@@ -1,27 +1,27 @@
 const { Sequelize } = require("sequelize")
 const db = require("../config/Database.js")
-const City = require("./City.js")
+const Question = require("./Question.js")
 
 const { DataTypes } = Sequelize
 
-const Solepedia = db.define(
-    "solepedia",
+const Answer = db.define(
+    "answers",
     {
         uuid: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
         },
-        city_id: {
+        question_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        title: {
+        answer: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        type: {
-            type: DataTypes.ENUM("book", "komik", "video"),
-            defaultValue: "book",
+        isCorrect: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: 0,
         },
     },
     {
@@ -31,8 +31,4 @@ const Solepedia = db.define(
     }
 )
 
-Solepedia.belongsTo(City, {
-    foreignKey: "city_id",
-})
-
-module.exports = Solepedia
+module.exports = Answer

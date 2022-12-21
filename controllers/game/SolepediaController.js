@@ -46,17 +46,24 @@ exports.listImageBySolepedia = async (req, res) => {
     const { solepedia_id } = req.params
 
     try {
-        const images = await SolepediaImage.findAll({
+        const images = await Solepedia.findOne({
             where: {
-                solepedia_id: solepedia_id,
+                id: solepedia_id,
+            },
+            attributes: ["id", "uuid", "title", "type"],
+            include: {
+                model: SolepediaImage,
+                as: "content",
+                attributes: ["id", "uuid", "solepedia_id", "content"],
             },
         })
 
-        images.map((image) => {
+        images.content.map((image) => {
             image.setDataValue(
-                "image",
-                `${process.env.IMAGE_URL}${image.image}`
+                "content_url",
+                `${process.env.IMAGE_URL}${image.content}`
             )
+            image.content = undefined
         })
 
         return res.status(200).json({

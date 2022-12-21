@@ -15,7 +15,7 @@ const SolepediaImage = db.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        image: {
+        content: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -29,10 +29,12 @@ const SolepediaImage = db.define(
 
 SolepediaImage.belongsTo(Solepedia, {
     foreignKey: "solepedia_id",
+    as: "contents",
 })
 
 Solepedia.hasMany(SolepediaImage, {
     foreignKey: "solepedia_id",
+    as: "content",
 })
 
 module.exports = SolepediaImage
