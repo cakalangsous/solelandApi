@@ -262,7 +262,7 @@ exports.decline = async (req, res) => {
 }
 
 exports.getPending = async (req, res) => {
-    const { uuid, kid } = req
+    const { kid } = req
 
     try {
         const pending = await KidFriend.findAll({
@@ -343,7 +343,7 @@ exports.getPending = async (req, res) => {
 }
 
 exports.request = async (req, res) => {
-    const { uuid, kid } = req
+    const { kid } = req
 
     try {
         const request = await KidFriend.findAll({
