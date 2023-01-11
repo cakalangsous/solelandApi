@@ -188,10 +188,10 @@ exports.approve = async (req, res) => {
         })
     }
 
-    if (request.target_id !== kid.id) {
+    if (request.source_id !== kid.id) {
         return res.status(422).json({
             status: false,
-            message: "Unknown source provided",
+            message: "Unknown source provided. Data invalid",
         })
     }
 
